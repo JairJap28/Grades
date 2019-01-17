@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Simulation.Simulation"
+    android:background="@color/colorLightGrayLine"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorRipped"
+        android:orientation="horizontal">
+
+        <Switch
+            android:id="@+id/switchPercentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Same percentage"
+            android:textOff="@string/no"
+            android:checked="true"
+            android:textOn="@string/yes"/>
+
+        <Button
+            android:id="@+id/btnAddSubjectSimulation"
+            android:layout_width="40dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:drawableStart="@drawable/ic_add_circle_black_24dp"
+            android:drawableTint="@color/colorGreen"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="5dp"
+            style="@style/Base.Widget.AppCompat.Button.Borderless"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvSubjectsSimultaion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/cardview_simulation">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorRipped"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="@string/final_grade"
+                        android:textColor="@color/colorText" />
+
+                    <TextView
+                        android:id="@+id/textViewFinalGrade"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text="5.0" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/textViewMessageResult"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:text="Congratulations!!!"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imageViewResult"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="15dp"
+                android:src="@drawable/any_question"/>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCancelSimulation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/exit"
+            android:layout_margin="5dp"
+            android:drawableStart="@drawable/ic_cancel_black_24dp"
+            android:drawableTint="@color/colorRed"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btnCalculate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/calculate"
+            android:layout_margin="5dp"
+            android:drawableEnd="@drawable/ic_directions_run_black_24dp"
+            android:layout_weight="1"
+            android:drawableTint="@color/colorText"/>
+    </LinearLayout>
+
+
+</LinearLayout>

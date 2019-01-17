@@ -1,0 +1,113 @@
+<resources>
+    <string name="app_name">WorksDidacticosCSJ</string>
+    <string name="action_settings">Settings</string>
+    <string name="works">Works</string>
+    <string name="Grades">Grades</string>
+    <string name="Done">Done</string>
+    <string name="title_activity_test">Test</string>
+    <string name="look_your_grades">Look your grades</string>
+    <string name="show">Show</string>
+    <string name="simulate">Simulate</string>
+    <string name="fast_simulation_of_your_grades">Fast simulation of your grades</string>
+    <string name="modify_one_of_your_subjects">Modify one of your subjects</string>
+    <string name="modify">Modify</string>
+    <string name="set_the_terms_of_the_semester">Set the terms of the semester</string>
+    <string name="configure">Configure</string>
+    <string name="edit">Edit</string>
+    <string name="description">Description</string>
+    <string name="working_with_android_studio">Working with Android Studio</string>
+    <string name="delete">Delete</string>
+    <string name="total">Total</string>
+    <string name="go_home">Go home</string>
+    <string name="name_of_the_subject">Name of the subject</string>
+    <string name="cancel">Cancel</string>
+    <string name="subject">Subject</string>
+    <string name="teacher">Teacher</string>
+    <string name="credits">Credits</string>
+    <string name="write_here">Write here</string>
+    <string name="start">Start</string>
+    <string name="grade">Grade</string>
+    <string name="calculate">Calculate</string>
+    <string name="final_grade">Final grade:</string>
+    <string name="period">Period</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="need_improve">You need to improve</string>
+    <string name="congratulations">Congratulations!!!</string>
+    <string name="exit">Exit</string>
+    <string name="periods">Periods</string>
+    <string name="add_to_schedule">ADD TO SCHEDULE</string>
+    <string name="select_time">Select Time:</string>
+    <string name="please_wait">Please wait ...</string>
+    <string name="insert_correct_number">Insert correct number</string>
+    <string name="insert_new_number">Insert new Number</string>
+    <string name="deleting">Deleting</string>
+    <string name="sa">Sa</string>
+    <string name="fr">Fr</string>
+    <string name="tu">Tu</string>
+    <string name="we">We</string>
+    <string name="th">Th</string>
+    <string name="mo">Mo</string>
+
+    <string name="monday">Monday</string>
+    <string name="thursday">Thursday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="save">Save</string>
+    <string name="add_grades">Add grades</string>
+    <string name="use_default_percentages">Use default percentages</string>
+    <string name="number_of_periods">Number of periods</string>
+    <string name="max_grade">Max grade</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="day">Day</string>
+    <string name="hour">Hour:</string>
+    <string name="application_information">Application Information</string>
+    <string name="developed_by_didacticos_csj">Developed by Didacticos CSJ</string>
+    <string name="app_information">App Information</string>
+    <string name="backup">Backup</string>
+    <string name="period_1">Period 1</string>
+    <string name="period_2">Period 2</string>
+    <string name="p_3">P 3</string>
+    <string name="p_2">P 2</string>
+    <string name="p_1">P 1</string>
+    <string name="p_4">P 4</string>
+    <string name="p_5">P 5</string>
+    <string name="p_6">P 6</string>
+    <string name="settings">Settings</string>
+    <string name="reset_app">Reset app</string>
+    <string name="reseting_app">Reseting the app</string>
+    <string name="be_careful_you_could_lose_your_info">Be careful, you can lose all of your info</string>
+
+
+    <string name="feature1">Simulate how your grades will be</string>
+    <string name="feature2">Store your actual grades, by periods</string>
+    <string name="feature3">Create a weekly schedule</string>
+    <string name="feature4">Create a Backup of your info</string>
+    <string name="feature5">You can add up to six periods</string>
+    <string name="feature6">Modify your stored subjects anytime</string>
+    <string name="feature7">Add new subjects and set the date for their classes</string>
+    <string name="feature8">Visualize your grades, you can set an importance order</string>
+    <string name="feature9">You will see the grade you need to approve your class</string>
+    <string name="features">Features</string>
+    <string name="connect_google_account">Connect Google account</string>
+    <string name="connect">Connect</string>
+    <string name="insert_your_info">Insert your info</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="connected">Connected</string>
+    <string name="logout">Logout</string>
+    <string name="establishing_connection">Establishing connection</string>
+    <string name="connecting">Connecting</string>
+    <string name="error_inser_sql">Error inserting SQL</string>
+    <string name="sucessfully">Successfully</string>
+    <string name="Updating">Updating...</string>
+    <string-array name="frecuency">
+        <item >One day</item>
+        <item>Three days</item>
+        <item>One week</item>
+        <item>Three weeks</item>
+        <item>One month</item>
+    </string-array>
+</resources>
