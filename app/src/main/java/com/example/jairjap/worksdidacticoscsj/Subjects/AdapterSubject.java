@@ -1,4 +1,4 @@
-package com.example.jairjap.worksdidacticoscsj.GradesDB;
+package com.example.jairjap.worksdidacticoscsj.Subjects;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -8,7 +8,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,32 +17,37 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jairjap.worksdidacticoscsj.GradesDB.CustomItemClickListener;
+import com.example.jairjap.worksdidacticoscsj.GradesDB.PropertySubject;
 import com.example.jairjap.worksdidacticoscsj.GradesDB.UploadGrade.AdapterUpload;
 import com.example.jairjap.worksdidacticoscsj.Preferences;
 import com.example.jairjap.worksdidacticoscsj.R;
-import com.example.jairjap.worksdidacticoscsj.SQLite.DatabaseHelper;
+import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHolderSubjetc>{
 
     private Context c;
-    public ArrayList<PropertySubject> data;
+    public List<SubjectModel> data;
     public boolean check[];
     private boolean opc;
-    private DatabaseHelper myDb;
     private CustomItemClickListener listener;
 
 
-    public AdapterSubject(ArrayList<PropertySubject> data, Context c, CustomItemClickListener listener){
-        this.data = data;
+    public AdapterSubject(Context c){
         this.c = c;
-        this.myDb = new DatabaseHelper(c);
+    }
+
+    public void setData(List<SubjectModel> data) {
+        this.data = data;
+        notifyDataSetChanged();
+    }
+
+    public void setListener(CustomItemClickListener listener) {
         this.listener = listener;
-        this.check = new boolean[data.size()];
-        Arrays.fill(check, false);
     }
 
     @NonNull
@@ -63,13 +67,18 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderSubjetc holder, int position) {
-        holder.subject.setText(data.get(position).getSubject());
-        holder.ratingBar.setRating(Float.parseFloat(data.get(position).getPriority()));
+        holder.subject.setText(data.get(position).getName());
+        holder.ratingBar.setRating(data.get(position).getPriority());
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        if(data != null){
+            return data.size();
+        }
+        else{
+            return 0;
+        }
     }
 
     public void updateRating(){

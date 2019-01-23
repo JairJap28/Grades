@@ -180,7 +180,7 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:text="5.0"
-                            android:background="@drawable/circlebackgroundlightyellow"
+                            android:background="@drawable/circle_background_yellow"
                             android:gravity="center"/>
 
                         <TextView
@@ -205,7 +205,7 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:text="5.0"
-                            android:background="@drawable/circlebackgroundlightyellow"
+                            android:background="@drawable/circle_background_yellow"
                             android:gravity="center"/>
 
                         <TextView

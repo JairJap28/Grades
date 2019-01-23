@@ -34,7 +34,7 @@
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:background="@drawable/circlebackgroundpurple"
+                    android:background="@drawable/circle_background_blue"
                     android:src="@drawable/ic_directions_run_black_24dp"
                     android:padding="10dp"/>
                 
@@ -80,7 +80,7 @@
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:background="@drawable/circlebackgroundpink"
+                    android:background="@drawable/circle_background_red_wine"
                     android:src="@drawable/ic_remove_red_eye_black_24dp"
                     android:padding="10dp"/>
 
@@ -135,7 +135,7 @@
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:background="@drawable/circlebackgroundgreen"
+                    android:background="@drawable/circle_background_orange"
                     android:src="@drawable/ic_control_point_black_24dp"
                     android:padding="10dp"/>
 
@@ -180,7 +180,7 @@
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:background="@drawable/circlebackgroundyellow"
+                    android:background="@drawable/circle_background_yellow"
                     android:src="@drawable/ic_attach_file_black_24dp"
                     android:padding="10dp"/>
 
@@ -219,11 +219,11 @@
         android:clipToPadding="false">
 
         <android.support.v7.widget.CardView
-            android:id="@+id/cvSetting"
+            android:id="@+id/cvSemesters"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:selectableItemBackground"
-            android:layout_width="330dp"
+            android:layout_width="160dp"
             android:layout_height="160dp"
             android:layout_margin="5dp">
 
@@ -235,7 +235,53 @@
                 <ImageView
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:background="@drawable/circlebackgroundpurple"
+                    android:background="@drawable/circle_background_green"
+                    android:src="@drawable/ic_assignment_black_24dp"
+                    android:padding="10dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/semesters"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorLightGrayLine"
+                    android:layout_margin="5dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/check_the_previous_and_current_semesters"
+                    android:padding="5dp"
+                    android:textColor="@android:color/darker_gray"/>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cvSetting"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:selectableItemBackground"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_margin="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/circle_background_sea_water"
                     android:src="@drawable/ic_settings_black_24dp"
                     android:padding="10dp"/>
 

@@ -103,6 +103,8 @@
     <string name="error_inser_sql">Error inserting SQL</string>
     <string name="sucessfully">Successfully</string>
     <string name="Updating">Updating...</string>
+    <string name="semesters">Semesters</string>
+    <string name="check_the_previous_and_current_semesters">Check the previous and current semesters</string>
     <string-array name="frecuency">
         <item >One day</item>
         <item>Three days</item>

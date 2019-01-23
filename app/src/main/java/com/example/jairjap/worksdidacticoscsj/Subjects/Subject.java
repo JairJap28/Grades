@@ -1,6 +1,8 @@
-package com.example.jairjap.worksdidacticoscsj;
+package com.example.jairjap.worksdidacticoscsj.Subjects;
 
-import android.database.Cursor;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,20 +12,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.jairjap.worksdidacticoscsj.GradesDB.AdapterSubject;
 import com.example.jairjap.worksdidacticoscsj.GradesDB.CustomItemClickListener;
 import com.example.jairjap.worksdidacticoscsj.GradesDB.PropertySubject;
-import com.example.jairjap.worksdidacticoscsj.SQLite.DatabaseHelper;
+import com.example.jairjap.worksdidacticoscsj.R;
+import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Subject extends AppCompatActivity {
 
     private RecyclerView rv;
     private AdapterSubject adapter;
     private ArrayList<PropertySubject> data;
-    private DatabaseHelper myDB;
+
+    private SubjectViewModel subjectViewModel;
 
     public boolean btnDoneUpdate;
 
@@ -34,7 +38,6 @@ public class Subject extends AppCompatActivity {
 
         btnDoneUpdate = false;
 
-        myDB = new DatabaseHelper(this);
         rv = findViewById(R.id.rvSubjectsDB);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -42,15 +45,32 @@ public class Subject extends AppCompatActivity {
 
         data = new ArrayList<>();
 
-        getDataSQLite();
-        Collections.sort(data);
-        adapter = new AdapterSubject(data, this, new CustomItemClickListener() {
+        subjectViewModel = ViewModelProviders.of(this).get(SubjectViewModel.class);
+
+        subjectViewModel.getAllSubjects().observe(this, new Observer<List<SubjectModel>>() {
+            @Override
+            public void onChanged(@Nullable List<SubjectModel> subjectModels) {
+                if (subjectModels != null) {
+                    //Sort the subjects
+                    Collections.sort(subjectModels);
+                    adapter.setData(subjectModels);
+                }
+            }
+        });
+
+        //Be carefull, I don't know why this is for
+        CustomItemClickListener itemClickListener = new CustomItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
                 Toast.makeText(Subject.this, data.get(position).getSubject(), Toast.LENGTH_SHORT).show();
             }
-        });
+        };
+
+        adapter = new AdapterSubject(this);
+        adapter.setListener(itemClickListener);
         rv.setAdapter(adapter);
+
+
 
     }
 
@@ -74,30 +94,5 @@ public class Subject extends AppCompatActivity {
                     return super.onOptionsItemSelected(item);
         }
 
-    }
-
-    void getDataSQLite(){
-        Cursor res = myDB.getAll();
-
-        if(res.getCount() == 0){
-            Toast.makeText(this, "Error nothing found", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        PropertySubject aux = new PropertySubject();
-
-        while (res.moveToNext()){
-            aux.setId(res.getInt(0));
-            aux.setSubject(res.getString(1));
-            aux.setTeacher(res.getString(2));
-            aux.setGrade(res.getString(3));
-            aux.setCredits(res.getLong(4) + "");
-            aux.setPriority(res.getDouble(5) + "");
-            aux.setFinalGrade(res.getDouble(6) + "");
-            data.add(aux);
-            aux = new PropertySubject();
-        }
-
-        res.close();
     }
 }

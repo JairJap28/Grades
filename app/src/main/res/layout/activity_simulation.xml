@@ -20,6 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Same percentage"
+            android:layout_marginStart="10dp"
             android:textOff="@string/no"
             android:checked="true"
             android:textOn="@string/yes"/>
@@ -39,8 +40,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:orientation="vertical"
+        android:background="@color/colorBackground"
         android:layout_weight="1">
 
         <android.support.v7.widget.RecyclerView
@@ -51,62 +53,49 @@
 
         </android.support.v7.widget.RecyclerView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorRipped"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="@string/final_grade"
-                        android:textColor="@color/colorText" />
-
-                    <TextView
-                        android:id="@+id/textViewFinalGrade"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="5.0" />
-                </LinearLayout>
-
-
-                <TextView
-                    android:id="@+id/textViewMessageResult"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="1"
-                    android:text="Congratulations!!!"
-                    android:textAlignment="center" />
-
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/imageViewResult"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
-                android:src="@drawable/any_question"/>
-
-
-        </LinearLayout>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorRipped"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/final_grade"
+                android:textColor="@color/colorText" />
+
+            <TextView
+                android:id="@+id/textViewFinalGrade"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="5.0" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/textViewMessageResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_weight="1"
+            android:text="Congratulations!!!"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"

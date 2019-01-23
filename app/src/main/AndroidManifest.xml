@@ -24,9 +24,9 @@
         <activity android:name=".Simulation.Simulation"
             android:configChanges="screenSize|orientation"
             android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".Subject" />
+        <activity android:name=".Subjects.Subject" />
         <activity
-            android:name=".Settings"
+            android:name=".SettingsPack.Settings"
             android:configChanges="screenSize|orientation"
             android:windowSoftInputMode="stateHidden">
 

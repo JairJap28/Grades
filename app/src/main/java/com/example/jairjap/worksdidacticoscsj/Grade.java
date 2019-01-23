@@ -20,8 +20,9 @@ import android.widget.Toast;
 
 import com.example.jairjap.worksdidacticoscsj.GradesDB.Schedule.AdapterSchedule;
 import com.example.jairjap.worksdidacticoscsj.GradesDB.Schedule.PropertySchedule;
-import com.example.jairjap.worksdidacticoscsj.SQLite.DatabaseHelper;
+import com.example.jairjap.worksdidacticoscsj.SettingsPack.Settings;
 import com.example.jairjap.worksdidacticoscsj.Simulation.Simulation;
+import com.example.jairjap.worksdidacticoscsj.Subjects.Subject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,42 +30,36 @@ import java.util.Collections;
 
 public class Grade extends AppCompatActivity {
 
-    private CardView cvGrade;
-    private CardView cvSimulate;
-    private CardView cvShow;
-    private CardView cvSettings;
-
     private RecyclerView rvDays;
     private ArrayList<PropertySchedule> days;
     private boolean[] controlDays;
     private AdapterSchedule adapter;
 
-    private DatabaseHelper myDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
+        setContentView(R.layout.activity_main);
 
-        myDb =  new DatabaseHelper(this);
+        CardView cvAdd = findViewById(R.id.addSubjectCardView);
+        CardView cvSimulate = findViewById(R.id.cvSimulate);
+        CardView cvShow = findViewById(R.id.cvShow);
+        CardView cvSettings = findViewById(R.id.cvSetting);
 
-        cvGrade = findViewById(R.id.addSubjectCardView);
-        cvSimulate = findViewById(R.id.cvSimulate);
-        cvShow = findViewById(R.id.cvShow);
-        cvSettings = findViewById(R.id.cvSetting);
-
-        cvGrade.setOnClickListener(new View.OnClickListener() {
+        cvAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialogAddSubject(Grade.this);
             }
         });
+
         cvSimulate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialogSimulate(Grade.this);
             }
         });
+
         cvShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,7 +112,7 @@ public class Grade extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(subjetc.getText().equals("") || subjetc.getText().length() == 0){
+                if(subjetc.getText().toString().equals("") || subjetc.getText().length() == 0){
                     Toast.makeText(activity, "Insert the name of the subject", Toast.LENGTH_SHORT).show();
                 }
                 else{
@@ -277,15 +272,6 @@ public class Grade extends AppCompatActivity {
         values.put("credits", credits);
         values.put("priority", 1.0);
         values.put("final", 0.0);
-
-        boolean isInserted = myDb.insert(values);
-
-        if(isInserted){
-            Toast.makeText(this, getResources().getString(R.string.sucessfully), Toast.LENGTH_SHORT).show();
-        }
-        else{
-            Toast.makeText(this, getResources().getString(R.string.error_inser_sql), Toast.LENGTH_SHORT).show();
-        }
     }
 
 }

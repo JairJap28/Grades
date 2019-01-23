@@ -1,10 +1,8 @@
-package com.example.jairjap.worksdidacticoscsj.SettingsP;
+package com.example.jairjap.worksdidacticoscsj.SettingsPack;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-
-import com.example.jairjap.worksdidacticoscsj.R;
 
 public class ResetAsyncTask extends AsyncTask<Void, Integer, Boolean> {
 

@@ -27,7 +27,6 @@ public class Simulation extends AppCompatActivity {
     private AdapterSimulation adapter;
     private Switch aSwitch;
     private TextView finalGrade;
-    private ImageView result;
     private TextView messageResult;
     private int addAllowed;
 
@@ -54,7 +53,6 @@ public class Simulation extends AppCompatActivity {
         addSubject = findViewById(R.id.btnAddSubjectSimulation);
         aSwitch = findViewById(R.id.switchPercentage);
         finalGrade = findViewById(R.id.textViewFinalGrade);
-        result = findViewById(R.id.imageViewResult);
         messageResult = findViewById(R.id.textViewMessageResult);
 
         restarResult();
@@ -161,31 +159,18 @@ public class Simulation extends AppCompatActivity {
         finalGrade.setText("-.-");
         messageResult.setText("");
         finalGrade.setTextColor(getResources().getColor(R.color.colorText));
-        result.setImageResource(R.drawable.any_question);
     }
 
     void hightResult(){
         finalGrade.setTextColor(getResources().getColor(R.color.colorGreen));
         messageResult.setTextColor(getResources().getColor(R.color.colorGreen));
         messageResult.setText(getResources().getString(R.string.congratulations));
-        int opc = (int) (Math.random() * 3) + 1;
-        switch (opc){
-            case 1: result.setImageResource(R.drawable.very_goood); break;
-            case 2: result.setImageResource(R.drawable.good_job); break;
-            default: result.setImageResource(R.drawable.good3); break;
-        }
     }
 
-    void lowResult(){
+    void lowResult() {
         finalGrade.setTextColor(getResources().getColor(R.color.colorRed));
         messageResult.setText(getResources().getString(R.string.need_improve));
         messageResult.setTextColor(getResources().getColor(R.color.colorRed));
-        int opc = (int) (Math.random() * 3) + 1;
-        switch (opc){
-            case 1: result.setImageResource(R.drawable.pay_attention); break;
-            case 2: result.setImageResource(R.drawable.pay_attention2); break;
-            default: result.setImageResource(R.drawable.pay_attention3); break;
-        }
     }
 
     boolean checkGrades(){
