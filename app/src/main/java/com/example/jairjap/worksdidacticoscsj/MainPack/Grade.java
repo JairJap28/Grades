@@ -1,10 +1,14 @@
-package com.example.jairjap.worksdidacticoscsj;
+package com.example.jairjap.worksdidacticoscsj.MainPack;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,10 +24,13 @@ import android.widget.Toast;
 
 import com.example.jairjap.worksdidacticoscsj.GradesDB.Schedule.AdapterSchedule;
 import com.example.jairjap.worksdidacticoscsj.GradesDB.Schedule.PropertySchedule;
+import com.example.jairjap.worksdidacticoscsj.R;
+import com.example.jairjap.worksdidacticoscsj.Room.SettingsRoom.SettingsModel;
 import com.example.jairjap.worksdidacticoscsj.SettingsPack.Settings;
 import com.example.jairjap.worksdidacticoscsj.Simulation.Simulation;
 import com.example.jairjap.worksdidacticoscsj.Subjects.Subject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,6 +42,11 @@ public class Grade extends AppCompatActivity {
     private boolean[] controlDays;
     private AdapterSchedule adapter;
 
+    private GradeViewModel gradeViewModel;
+
+    //this is if we want to add a new
+    //seubject mark the switch schedule
+    private boolean createSchedule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +58,12 @@ public class Grade extends AppCompatActivity {
         CardView cvShow = findViewById(R.id.cvShow);
         CardView cvSettings = findViewById(R.id.cvSetting);
 
+        gradeViewModel = ViewModelProviders.of(this).get(GradeViewModel.class);
+
         cvAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialogAddSubject(Grade.this);
+                dialogAddSubject(new WeakReference<>(Grade.this));
             }
         });
 
@@ -75,16 +89,25 @@ public class Grade extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+        gradeViewModel.getSchedule().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                if(aBoolean != null){
+                    createSchedule = aBoolean;
+                }
+            }
+        });
     }
 
 
-    void dialogAddSubject(final Activity activity){
+    void dialogAddSubject(final WeakReference<Activity> activity){
 
         days = new ArrayList<>();
         controlDays = new boolean[7];
         Arrays.fill(controlDays, false);
 
-        final Dialog dialog = new Dialog(activity);
+        final Dialog dialog = new Dialog(activity.get());
         dialog.setContentView(R.layout.add_grade);
 
         final EditText subjetc = dialog.findViewById(R.id.editTextSubject);
@@ -107,66 +130,9 @@ public class Grade extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvDays.setLayoutManager(linearLayoutManager);
 
-        dialog.show();
-
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(subjetc.getText().toString().equals("") || subjetc.getText().length() == 0){
-                    Toast.makeText(activity, "Insert the name of the subject", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    saveSubject(subjetc.getText().toString(), teacher.getText().toString(), credits.getText().toString());
-                }
-            }
-        });
-
-
-        aux[0].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkBoxControl(aux[0], 0, controlDays, activity, getResources().getString(R.string.monday));
-            }
-        });
-
-        aux[1].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkBoxControl(aux[1], 1, controlDays, activity, getResources().getString(R.string.tuesday));
-            }
-        });
-
-        aux[2].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkBoxControl(aux[2], 2, controlDays, activity, getResources().getString(R.string.wednesday));
-            }
-        });
-
-        aux[3].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkBoxControl(aux[3], 3, controlDays, activity, getResources().getString(R.string.thursday));
-            }
-        });
-
-        aux[4].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkBoxControl(aux[4], 4, controlDays, activity, getResources().getString(R.string.friday));
-            }
-        });
-
-        aux[5].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkBoxControl(aux[5], 5, controlDays, activity, getResources().getString(R.string.saturday));
-            }
-        });
-
-        switchSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        //Anonymous class to use funtions many times
+        class Foo{
+            private void setSchedule(){
                 controlDays[6] = switchSchedule.isChecked();
                 if(controlDays[6]){
                     layoutDays.setVisibility(View.VISIBLE);
@@ -182,6 +148,115 @@ public class Grade extends AppCompatActivity {
                     rvDays.setVisibility(View.GONE);
                 }
             }
+
+            //This is because the user starts with the
+            //schedule layout active
+            private void activeScheduleCreation(){
+                layoutDays.setVisibility(View.VISIBLE);
+                rvDays.setVisibility(View.VISIBLE);
+            }
+
+            private void saveSubject(String subjetc, String teacher, String credits){
+
+                String grades = "0-0-0-0-0-0";
+                ContentValues values = new ContentValues();
+                values.put("subject", subjetc);
+                values.put("teacher", teacher);
+                values.put("grades", grades);
+                values.put("credits", credits);
+                values.put("priority", 1.0);
+                values.put("final", 0.0);
+            }
+
+            private void checkBoxControl(CheckBox c, int pos, boolean [] controlDays,
+                                         WeakReference<Activity> activity, String day){
+                controlDays[pos] = c.isChecked();
+                if(controlDays[pos]){
+                    days.add(new PropertySchedule(day, pos));
+                    Collections.sort(days);
+                    adapter = new AdapterSchedule(new WeakReference<Context>(Grade.this), days);
+                    rvDays.setAdapter(adapter);
+                }
+                else{
+                    int index = getIndex(pos);
+                    adapter.remove(index);
+                }
+            }
+        }
+        Foo foo = new Foo();
+
+        dialog.show();
+
+        //set the stored settings
+        switchSchedule.setChecked(createSchedule);
+        if(createSchedule){
+            //if the user already defined to create scedule
+            //activate the layout
+            foo.activeScheduleCreation();
+        }
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(subjetc.getText().toString().equals("") || subjetc.getText().length() == 0){
+                    Toast.makeText(activity.get(), "Insert the name of the subject", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    foo.saveSubject(subjetc.getText().toString(), teacher.getText().toString(), credits.getText().toString());
+                }
+            }
+        });
+
+
+        aux[0].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                foo.checkBoxControl(aux[0], 0, controlDays,
+                        new WeakReference<Activity>(Grade.this),
+                        getResources().getString(R.string.monday));
+            }
+        });
+
+        aux[1].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                foo.checkBoxControl(aux[1], 1, controlDays, activity, getResources().getString(R.string.tuesday));
+            }
+        });
+
+        aux[2].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                foo.checkBoxControl(aux[2], 2, controlDays, activity, getResources().getString(R.string.wednesday));
+            }
+        });
+
+        aux[3].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                foo.checkBoxControl(aux[3], 3, controlDays, activity, getResources().getString(R.string.thursday));
+            }
+        });
+
+        aux[4].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                foo.checkBoxControl(aux[4], 4, controlDays, activity, getResources().getString(R.string.friday));
+            }
+        });
+
+        aux[5].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                foo.checkBoxControl(aux[5], 5, controlDays, activity, getResources().getString(R.string.saturday));
+            }
+        });
+
+        switchSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                foo.setSchedule();
+            }
         });
 
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -196,21 +271,6 @@ public class Grade extends AppCompatActivity {
         for(int i = 0; i < 6; i++){
             controlDays[i] = false;
             a[i].setChecked(false);
-        }
-    }
-
-    void checkBoxControl(CheckBox c, int pos, boolean [] controlDays, Activity activity, String day){
-        controlDays[pos] = c.isChecked();
-        if(controlDays[pos]){
-            days.add(new PropertySchedule(day, pos));
-            Collections.sort(days);
-            adapter = new AdapterSchedule(activity, days);
-            rvDays.setAdapter(adapter);
-        }
-        else{
-
-            int index = getIndex(pos);
-            adapter.remove(index);
         }
     }
 
@@ -252,26 +312,6 @@ public class Grade extends AppCompatActivity {
                 startActivity(i);
             }
         });
-    }
-
-    void saveSubject(String subjetc, String teacher, String credits){
-
-        String grades = "0-0-0-0-0-0";
-
-        /*dataHelper.getmInsertStatement().bindString(2, subjetc);
-        dataHelper.getmInsertStatement().bindString(3, teacher);
-        dataHelper.getmInsertStatement().bindString(4, grades);
-        dataHelper.getmInsertStatement().bindDouble(5, Integer.parseInt(credits));
-        dataHelper.getmInsertStatement().bindDouble(6, 0.0);
-        dataHelper.getmInsertStatement().bindDouble(7, 0.0);*/
-
-        ContentValues values = new ContentValues();
-        values.put("subject", subjetc);
-        values.put("teacher", teacher);
-        values.put("grades", grades);
-        values.put("credits", credits);
-        values.put("priority", 1.0);
-        values.put("final", 0.0);
     }
 
 }

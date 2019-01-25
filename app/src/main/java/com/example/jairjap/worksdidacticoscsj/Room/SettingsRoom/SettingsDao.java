@@ -17,6 +17,9 @@ public interface SettingsDao {
     @Query("SELECT * FROM settings")
     LiveData<List<SettingsModel>> settings();
 
+    @Query("SELECT schedule FROM settings WHERE id = 'setting_1' ")
+    LiveData<Boolean> getSchedule();
+
     @Insert
     void insertSettings(SettingsModel settingsModel);
 

@@ -14,6 +14,7 @@ import android.widget.TimePicker;
 
 import com.example.jairjap.worksdidacticoscsj.R;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -21,11 +22,11 @@ import java.util.Collections;
 public class AdapterSchedule extends RecyclerView.Adapter<AdapterSchedule.ViewHolder> {
 
     private ArrayList<PropertySchedule> days;
-    private Context c;
+    private WeakReference<Context> wContext;
 
-    public AdapterSchedule(Context c, ArrayList<PropertySchedule> days){
+    public AdapterSchedule(WeakReference<Context> wContext, ArrayList<PropertySchedule> days){
         this.days = days;
-        this.c = c;
+        this.wContext = wContext;
     }
 
     @NonNull
@@ -83,7 +84,7 @@ public class AdapterSchedule extends RecyclerView.Adapter<AdapterSchedule.ViewHo
             int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
             int minute = mcurrentTime.get(Calendar.MINUTE);
             TimePickerDialog mTimePicker;
-            mTimePicker = new TimePickerDialog(c, new TimePickerDialog.OnTimeSetListener() {
+            mTimePicker = new TimePickerDialog(wContext.get(), new TimePickerDialog.OnTimeSetListener() {
                 @Override
                 public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                     String hourDays = selectedHour + ":" + ((selectedMinute < 10) ? "0"+selectedMinute :  selectedMinute);
@@ -91,7 +92,7 @@ public class AdapterSchedule extends RecyclerView.Adapter<AdapterSchedule.ViewHo
                     days.get(getAdapterPosition()).setHour(hourDays);
                 }
             }, hour, minute, true);//Yes 24 hour time
-            mTimePicker.setTitle(c.getResources().getString(R.string.select_time));
+            mTimePicker.setTitle(wContext.get().getResources().getString(R.string.select_time));
             mTimePicker.show();
         }
     }
