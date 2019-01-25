@@ -10,7 +10,7 @@ import com.example.jairjap.worksdidacticoscsj.Room.Converters;
 
 import java.lang.ref.WeakReference;
 
-@Database(entities = ScheduleModel.class, version = 1, exportSchema = false)
+@Database(entities = ScheduleModel.class, version = 2, exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class ScheduleDataBase extends RoomDatabase {
     public abstract ScheduleDAO scheduleDAO();

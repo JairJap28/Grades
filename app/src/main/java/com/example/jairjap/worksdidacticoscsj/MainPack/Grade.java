@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -25,7 +27,9 @@ import android.widget.Toast;
 import com.example.jairjap.worksdidacticoscsj.GradesDB.Schedule.AdapterSchedule;
 import com.example.jairjap.worksdidacticoscsj.GradesDB.Schedule.PropertySchedule;
 import com.example.jairjap.worksdidacticoscsj.R;
+import com.example.jairjap.worksdidacticoscsj.Room.ScheduleRoom.ScheduleModel;
 import com.example.jairjap.worksdidacticoscsj.Room.SettingsRoom.SettingsModel;
+import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectModel;
 import com.example.jairjap.worksdidacticoscsj.SettingsPack.Settings;
 import com.example.jairjap.worksdidacticoscsj.Simulation.Simulation;
 import com.example.jairjap.worksdidacticoscsj.Subjects.Subject;
@@ -47,6 +51,8 @@ public class Grade extends AppCompatActivity {
     //this is if we want to add a new
     //seubject mark the switch schedule
     private boolean createSchedule;
+    private float max_grade;
+    private int amount_periods;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,11 +96,33 @@ public class Grade extends AppCompatActivity {
             }
         });
 
+
+        //OBSERVERS FOR LIVE DATA
         gradeViewModel.getSchedule().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
                 if(aBoolean != null){
                     createSchedule = aBoolean;
+                }
+            }
+        });
+
+        gradeViewModel.getMaxGrade().observe(this, new Observer<Float>() {
+            @Override
+            public void onChanged(@Nullable Float aFloat) {
+                if(aFloat != null){
+                    //the minimum grade must be greather tha 3
+                    max_grade = (aFloat > 3.0f) ? aFloat: 5.0f;
+                }
+            }
+        });
+
+        gradeViewModel.getPercentagePeriods().observe(this, new Observer<SparseIntArray>() {
+            @Override
+            public void onChanged(@Nullable SparseIntArray sparseIntArray) {
+                if(sparseIntArray != null){
+                    //verify if the array is empty
+                    amount_periods = (sparseIntArray.size() > 0) ? sparseIntArray.size() : 3;
                 }
             }
         });
@@ -156,25 +184,52 @@ public class Grade extends AppCompatActivity {
                 rvDays.setVisibility(View.VISIBLE);
             }
 
-            private void saveSubject(String subjetc, String teacher, String credits){
+            private void saveSubject(){
+                SubjectModel subjectModel = new SubjectModel();
+                subjectModel.setName(subjetc.getText().toString().trim());
+                subjectModel.setTeacher_name(teacher.getText().toString().trim());
+                subjectModel.setCant_credits(Integer.parseInt(credits.getText().toString().trim()));
+                //needed grade = max_grade because there are no any grades
+                subjectModel.setGrade_needed(max_grade);
+                subjectModel.setPriority(1.0f);
 
-                String grades = "0-0-0-0-0-0";
-                ContentValues values = new ContentValues();
-                values.put("subject", subjetc);
-                values.put("teacher", teacher);
-                values.put("grades", grades);
-                values.put("credits", credits);
-                values.put("priority", 1.0);
-                values.put("final", 0.0);
+                //set the amount of periods and init it with 0.0
+                SparseArray<Float> auxGrades = new SparseArray<>();
+                for(int i = 0; i < amount_periods; i++){
+                    auxGrades.put(i, 0.0f);
+                }
+
+                subjectModel.setPeriod_grade(auxGrades);
+                subjectModel.setId((int) (Math.random() * Integer.MAX_VALUE + 1));
+
+                //the key will be the index of the day
+                //the value will be the hout
+                SparseArray<String> auxDays = new SparseArray<>();
+                for(PropertySchedule p: days){
+                    auxDays.put(p.getIndex() + 1, p.getHour());
+                }
+
+                ScheduleModel scheduleModel = new ScheduleModel();
+                scheduleModel.setId(subjectModel.getId());
+                scheduleModel.setName(subjectModel.getName());
+                scheduleModel.setTeacher_name(subjectModel.getTeacher_name());
+                scheduleModel.setDay(auxDays);
+
+                //insert it
+                gradeViewModel.insertSubject(subjectModel, scheduleModel);
+
+                //close dialog
+                dialog.dismiss();
+                Toast.makeText(Grade.this, Grade.this.getResources().getString(R.string.subject_added_successfull),
+                        Toast.LENGTH_SHORT).show();
             }
 
-            private void checkBoxControl(CheckBox c, int pos, boolean [] controlDays,
-                                         WeakReference<Activity> activity, String day){
+            private void checkBoxControl(CheckBox c, int pos, boolean [] controlDays, String day){
                 controlDays[pos] = c.isChecked();
                 if(controlDays[pos]){
                     days.add(new PropertySchedule(day, pos));
                     Collections.sort(days);
-                    adapter = new AdapterSchedule(new WeakReference<Context>(Grade.this), days);
+                    adapter = new AdapterSchedule(new WeakReference<>(Grade.this), days);
                     rvDays.setAdapter(adapter);
                 }
                 else{
@@ -184,7 +239,7 @@ public class Grade extends AppCompatActivity {
             }
         }
         Foo foo = new Foo();
-
+        //Show the dialog
         dialog.show();
 
         //set the stored settings
@@ -202,7 +257,7 @@ public class Grade extends AppCompatActivity {
                     Toast.makeText(activity.get(), "Insert the name of the subject", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    foo.saveSubject(subjetc.getText().toString(), teacher.getText().toString(), credits.getText().toString());
+                    foo.saveSubject();
                 }
             }
         });
@@ -212,7 +267,6 @@ public class Grade extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 foo.checkBoxControl(aux[0], 0, controlDays,
-                        new WeakReference<Activity>(Grade.this),
                         getResources().getString(R.string.monday));
             }
         });
@@ -220,35 +274,35 @@ public class Grade extends AppCompatActivity {
         aux[1].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                foo.checkBoxControl(aux[1], 1, controlDays, activity, getResources().getString(R.string.tuesday));
+                foo.checkBoxControl(aux[1], 1, controlDays, getResources().getString(R.string.tuesday));
             }
         });
 
         aux[2].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                foo.checkBoxControl(aux[2], 2, controlDays, activity, getResources().getString(R.string.wednesday));
+                foo.checkBoxControl(aux[2], 2, controlDays, getResources().getString(R.string.wednesday));
             }
         });
 
         aux[3].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                foo.checkBoxControl(aux[3], 3, controlDays, activity, getResources().getString(R.string.thursday));
+                foo.checkBoxControl(aux[3], 3, controlDays, getResources().getString(R.string.thursday));
             }
         });
 
         aux[4].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                foo.checkBoxControl(aux[4], 4, controlDays, activity, getResources().getString(R.string.friday));
+                foo.checkBoxControl(aux[4], 4, controlDays, getResources().getString(R.string.friday));
             }
         });
 
         aux[5].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                foo.checkBoxControl(aux[5], 5, controlDays, activity, getResources().getString(R.string.saturday));
+                foo.checkBoxControl(aux[5], 5, controlDays, getResources().getString(R.string.saturday));
             }
         });
 

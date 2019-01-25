@@ -79,11 +79,6 @@ public class Settings extends AppCompatActivity {
             auxNumPeriods = "3";
         }
 
-        ArrayAdapter<CharSequence> opcFrecuency = ArrayAdapter.createFromResource(this, R.array.frecuency,
-                R.layout.spinner_item);
-
-        opcFrecuency.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         getAmountPeriods.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

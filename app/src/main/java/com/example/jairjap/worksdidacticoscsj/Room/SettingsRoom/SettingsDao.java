@@ -20,6 +20,12 @@ public interface SettingsDao {
     @Query("SELECT schedule FROM settings WHERE id = 'setting_1' ")
     LiveData<Boolean> getSchedule();
 
+    @Query("SELECT max_grade FROM settings WHERE id = 'setting_1' ")
+    LiveData<Float> getMaxGrade();
+
+    @Query("SELECT periods_percentage FROM settings WHERE id = 'setting_1'")
+    LiveData<SparseIntArray> getPercentagePeriods();
+
     @Insert
     void insertSettings(SettingsModel settingsModel);
 

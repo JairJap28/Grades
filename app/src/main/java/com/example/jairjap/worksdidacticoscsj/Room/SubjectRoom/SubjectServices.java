@@ -3,16 +3,22 @@ package com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom;
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.SparseArray;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class SubjectServices {
-    private static SubjectDataBase db;
+    private static SubjectDAO subjectDao;
 
-    public SubjectServices(WeakReference<Context> wContex) {
-        db = SubjectDataBase.getInstance(wContex);
+    public SubjectServices(WeakReference<Context> wContext) {
+        SubjectDataBase subjectDB = SubjectDataBase.getInstance(wContext);
+        subjectDao = subjectDB.subjectDAO();
+    }
+
+    public SubjectServices(SubjectDAO subjectDao_in) {
+        subjectDao = subjectDao_in;
     }
 
     public LiveData<List<SubjectModel>> selectSubjects()
@@ -24,8 +30,12 @@ public class SubjectServices {
         new InsertSubjectAsync().execute(subjectModel);
     }
 
-    public void updatePeriodGrade(SubjectModel subjectModel){
+    public void updateSubject(SubjectModel subjectModel){
         new UpdatePeriodGradeAsync().execute(subjectModel);
+    }
+
+    public void updatePeriodGrade(SparseArray<Float> period_grade, String in){
+
     }
 
     public void updatePriority(String id, String priority){
@@ -34,21 +44,17 @@ public class SubjectServices {
 
 
     /* GETTER AND SETTERS */
-    public static SubjectDataBase getDb() {
-        return db;
-    }
-
     static class SelectSubjectsAsync extends AsyncTask<Void, Void, LiveData<List<SubjectModel>>>{
         @Override
         protected LiveData<List<SubjectModel>> doInBackground(Void... voids){
-            return db.subjectDAO().subjecs();
+            return subjectDao.subjecs();
         }
     }
 
     static class InsertSubjectAsync extends AsyncTask<SubjectModel, Void, Void>{
         @Override
         protected Void doInBackground(SubjectModel... subjectModels) {
-            db.subjectDAO().insertSubject(subjectModels);
+            subjectDao.insertSubject(subjectModels);
             return null;
         }
     }
@@ -56,7 +62,7 @@ public class SubjectServices {
     static class UpdatePeriodGradeAsync extends AsyncTask<SubjectModel, Void, Void>{
         @Override
         protected Void doInBackground(SubjectModel... subjectModels) {
-            db.subjectDAO().updatePeriodGrade(subjectModels[0]);
+            subjectDao.updateSubject(subjectModels[0]);
             return null;
         }
     }
@@ -66,7 +72,7 @@ public class SubjectServices {
         protected Void doInBackground(String... strings) {
             //pos 0 is the id
             //pos 1 is the new priority
-            db.subjectDAO().updatePriority(strings[0], Float.parseFloat(strings[1]));
+            subjectDao.updatePriority(strings[0], Float.parseFloat(strings[1]));
             return null;
         }
     }

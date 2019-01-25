@@ -14,7 +14,7 @@ public class ScheduleModel {
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "id")
-    private String id;
+    private int id;
 
     @ColumnInfo(name = "name")
     private String name;
@@ -26,11 +26,11 @@ public class ScheduleModel {
     private SparseArray<String> day;
 
     @NonNull
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(@NonNull String id) {
+    public void setId(@NonNull int id) {
         this.id = id;
     }
 

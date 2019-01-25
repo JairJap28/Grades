@@ -35,7 +35,36 @@ public class Converters {
                 out.append(",");
             }
         }
+        return out.toString();
+    }
 
+    @TypeConverter
+    public static SparseArray<Float> StringToSparseFloat(String in){
+        SparseArray<Float> out = new SparseArray<>();
+        //divide into firt part
+        //the scheme is key:value,key:value
+        String parts[] = in.split(",");
+        for(String segment: parts){
+            //divide into second regex :
+            String innerParts[] = segment.split(":");
+            out.put(Integer.parseInt(innerParts[0]), Float.parseFloat(innerParts[1]));
+        }
+        return out;
+    }
+
+    @TypeConverter
+    public static String SparseFloatToString(SparseArray<Float> in){
+        //this because it is faster than +=
+        StringBuilder out = new StringBuilder();
+
+        for(int i = 0; i < in.size(); i++){
+            out.append(String.valueOf(i + 1));
+            out.append(":");
+            out.append(in.valueAt(i));
+            if(i < in.size() - 1){
+                out.append(",");
+            }
+        }
         return out.toString();
     }
 

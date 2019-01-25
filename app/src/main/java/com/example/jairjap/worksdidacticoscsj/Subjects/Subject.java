@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.example.jairjap.worksdidacticoscsj.GradesDB.PropertySubject;
 import com.example.jairjap.worksdidacticoscsj.R;
 import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectModel;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,6 +49,19 @@ public class Subject extends AppCompatActivity {
 
         subjectViewModel = ViewModelProviders.of(this).get(SubjectViewModel.class);
 
+        //Be carefull, I don't know why this is for
+        CustomItemClickListener itemClickListener = new CustomItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Toast.makeText(Subject.this, data.get(position).getSubject(), Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        adapter = new AdapterSubject(new WeakReference<>(this));
+        adapter.setListener(itemClickListener);
+        rv.setAdapter(adapter);
+
+        //OBSERVER FOR LIVE DATA
         subjectViewModel.getAllSubjects().observe(this, new Observer<List<SubjectModel>>() {
             @Override
             public void onChanged(@Nullable List<SubjectModel> subjectModels) {
@@ -57,21 +72,6 @@ public class Subject extends AppCompatActivity {
                 }
             }
         });
-
-        //Be carefull, I don't know why this is for
-        CustomItemClickListener itemClickListener = new CustomItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                Toast.makeText(Subject.this, data.get(position).getSubject(), Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        adapter = new AdapterSubject(this);
-        adapter.setListener(itemClickListener);
-        rv.setAdapter(adapter);
-
-
-
     }
 
     @Override
@@ -93,6 +93,5 @@ public class Subject extends AppCompatActivity {
                 default:
                     return super.onOptionsItemSelected(item);
         }
-
     }
 }

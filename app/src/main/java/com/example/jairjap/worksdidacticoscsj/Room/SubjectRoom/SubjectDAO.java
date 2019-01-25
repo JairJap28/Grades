@@ -6,6 +6,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
+import android.util.SparseArray;
 
 import java.util.List;
 
@@ -19,7 +20,10 @@ public interface SubjectDAO {
     void insertSubject(SubjectModel... subjectModel);
 
     @Update(onConflict = OnConflictStrategy.IGNORE)
-    void updatePeriodGrade(SubjectModel subjectModel);
+    void updateSubject(SubjectModel subjectModel);
+
+    @Query("UPDATE subjects SET peridos_Grade = :periods_grade WHERE id = :id")
+    void updatePeriodGrade(SparseArray<Float> periods_grade, int id);
 
     @Query("UPDATE subjects SET priority = :priority WHERE id = :id")
     void updatePriority(String id, float priority);

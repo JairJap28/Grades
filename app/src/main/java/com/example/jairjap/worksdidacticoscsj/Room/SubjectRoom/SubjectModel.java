@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import android.util.SparseArray;
 
 import java.util.HashMap;
 
@@ -34,7 +35,7 @@ public class SubjectModel implements Comparable<SubjectModel>{
     private int cant_credits;
 
     @ColumnInfo(name = "peridos_Grade")
-    private HashMap<String, Float> period_grade;
+    private SparseArray<Float> period_grade;
 
     @NonNull
     public int getId() {
@@ -93,11 +94,11 @@ public class SubjectModel implements Comparable<SubjectModel>{
         this.cant_credits = cant_credits;
     }
 
-    public HashMap<String, Float> getPeriod_grade() {
+    public SparseArray<Float> getPeriod_grade() {
         return period_grade;
     }
 
-    public void setPeriod_grade(HashMap<String, Float> period_grade) {
+    public void setPeriod_grade(SparseArray<Float> period_grade) {
         this.period_grade = period_grade;
     }
 

@@ -105,11 +105,6 @@
     <string name="Updating">Updating...</string>
     <string name="semesters">Semesters</string>
     <string name="check_the_previous_and_current_semesters">Check the previous and current semesters</string>
-    <string-array name="frecuency">
-        <item >One day</item>
-        <item>Three days</item>
-        <item>One week</item>
-        <item>Three weeks</item>
-        <item>One month</item>
-    </string-array>
+    <string name="subject_added_successfull">Subject added successfully</string>
+    <string name="done">Done</string>
 </resources>
