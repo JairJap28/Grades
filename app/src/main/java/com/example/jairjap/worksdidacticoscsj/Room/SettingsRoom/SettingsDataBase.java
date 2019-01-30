@@ -10,7 +10,7 @@ import com.example.jairjap.worksdidacticoscsj.Room.Converters;
 
 import java.lang.ref.WeakReference;
 
-@Database(entities = SettingsModel.class, version = 3, exportSchema = false)
+@Database(entities = SettingsModel.class, version = 4 , exportSchema = false)
 @TypeConverters(Converters.class)
 public abstract class SettingsDataBase extends RoomDatabase {
 

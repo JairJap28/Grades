@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,14 +38,38 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
     private boolean opc;
     private CustomItemClickListener listener;
 
+    //get the periods and its percentage to
+    //calculate the final grade and needed grade
+    private SparseIntArray periods_percentage;
+    //max grade to calculate the needed grade
+    private float max_grade;
+    private float min_grade;
 
     public AdapterSubject(WeakReference<Context> wContext) {
         this.wContext = wContext;
     }
 
+
+    //GETTER AND SETTERS
     public void setData(List<SubjectModel> data) {
         this.data = data;
         notifyDataSetChanged();
+    }
+
+    public void setPeriods_percentage(SparseIntArray periods_percentage) {
+        this.periods_percentage = periods_percentage;
+    }
+
+    public void setMax_grade(float max_grade) {
+        this.max_grade = max_grade;
+    }
+
+    public float getMin_grade() {
+        return min_grade;
+    }
+
+    public void setMin_grade(float min_grade) {
+        this.min_grade = min_grade;
     }
 
     public void setListener(CustomItemClickListener listener) {
@@ -76,6 +101,16 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
         for(int i = 0; i < period_grade.size(); i++){
             holder.grades[i].setText(String.valueOf(period_grade.valueAt(i)));
         }
+
+        holder.final_grade.setText(String.valueOf(data.get(position).getGrade_needed()));
+
+        if(data.get(position).getGrade_needed() < min_grade){
+            String out = String.format("%.2f", (min_grade - data.get(position).getGrade_needed()) );
+            holder.required_grade.setText(String.valueOf(out));
+        }
+        else{
+            holder.required_grade.setText("0.0");
+        }
     }
 
     @Override
@@ -101,6 +136,8 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
         RatingBar ratingBar;
         TextView subject;
         TextView grades[];
+        TextView required_grade;
+        TextView final_grade;
 
         ViewHolderSubjetc(View itemView) {
             super(itemView);
@@ -119,6 +156,9 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
             grades[4] = itemView.findViewById(R.id.textViewGradePeriod5);
             grades[5] = itemView.findViewById(R.id.textViewGradePeriod6);
 
+            required_grade = itemView.findViewById(R.id.textViewNeededGrade);
+            final_grade = itemView.findViewById(R.id.textViewTotalGrade);
+
             setEnablePeriods(grades);
 
             grade.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +175,7 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
                    //Toast.makeText(c, rating + "", Toast.LENGTH_SHORT).show();
                 }
             });
+
         }
 
         void setEnablePeriods(TextView[] grades){
@@ -165,7 +206,6 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
             Button cancel = dialog.findViewById(R.id.btnCancelAddGrade);
             Button save = dialog.findViewById(R.id.btnSaveAddGrade);
             LinearLayout linearLayoutBar = dialog.findViewById(R.id.linearLayout_ratingBar);
-            final Switch defaultP = dialog.findViewById(R.id.switchDefaultGrades);
             RecyclerView rvGrades = dialog.findViewById(R.id.rvGradesPeriod);
             final AdapterUpload adapter;
 
@@ -179,27 +219,9 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
 
             dialog.show();
 
-            defaultP.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(wContext.get(), defaultP.isChecked() + "", Toast.LENGTH_SHORT).show();
-                    opc = defaultP.isChecked();
-                    adapter.updateState(opc);
-                }
-            });
-
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SparseArray<Float> aux_perioidGrades = new SparseArray<>();
-                    adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-                        @Override
-                        public void onChanged() {
-                            super.onChanged();
-                        }
-                    });
-
-                    for(int i = 0; i < )
                     updateGrades();
                     dialog.dismiss();
                     Toast.makeText(wContext.get(), wContext.get().getResources().getString(R.string.done), Toast.LENGTH_SHORT).show();
@@ -215,17 +237,22 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
         }
 
         void updateGrades(){
-            SparseArray<Float> period_grades = data.get(getAdapterPosition()).getPeriod_grade();
-            for(int i = 0; i < period_grades.size(); i++){
-                float aux = Float.parseFloat(grades[i].getText().toString().trim());
-                period_grades.setValueAt(i, aux);
+            float grade_needed = 0;
+            //get the grades in this variable
+            SparseArray<Float> aux_grades = data.get(getAdapterPosition()).getPeriod_grade();
+
+            //iterate trought the periods
+            for(int i = 0; i < periods_percentage.size(); i++){
+                //calculate de final grade
+                grade_needed += (periods_percentage.valueAt(i) * aux_grades.valueAt(i)) / 100.0;
             }
 
-            /*SubjectModel subjectModel = data.get(getAdapterPosition());
-            subjectModel.setPeriod_grade(period_grades);
+            SubjectModel subjectModel = data.get(getAdapterPosition());
+            subjectModel.setPeriod_grade(data.get(getAdapterPosition()).getPeriod_grade());
+            subjectModel.setGrade_needed(grade_needed);
 
             SubjectServices services = new SubjectServices(wContext);
-            services.updateSubject(subjectModel);*/
+            services.updateSubject(subjectModel);
         }
     }
 }

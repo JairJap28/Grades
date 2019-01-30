@@ -36,6 +36,7 @@ public class Settings extends AppCompatActivity {
     private EditText getAmountPeriods;
     private EditText edTxt_max_grade;
     private EditText editText_max_credits;
+    private EditText editText_min_grade;
     private Switch switchSettingSchedule;
     private LinearLayout[] periods_layouts = new LinearLayout[6];
     private EditText[] percentage_periods = new  EditText[6];
@@ -67,6 +68,7 @@ public class Settings extends AppCompatActivity {
 
         getAmountPeriods = findViewById(R.id.editTextSettingPeriods);
         edTxt_max_grade = findViewById(R.id.editTextSetting_max_grade);
+        editText_min_grade = findViewById(R.id.editTextSetting_minimun_grades);
         editText_max_credits = findViewById(R.id.editTextSetting_max_credits);
         switchSettingSchedule = findViewById(R.id.switchSettingSchedule);
 
@@ -213,6 +215,7 @@ public class Settings extends AppCompatActivity {
 
         auxSettingModel.setId("setting_1");
         auxSettingModel.setMax_grade(Float.parseFloat(edTxt_max_grade.getText().toString()));
+        auxSettingModel.setMin_grade(Float.parseFloat(editText_min_grade.getText().toString()));
         auxSettingModel.setMax_credits(Integer.parseInt(editText_max_credits.getText().toString()));
         auxSettingModel.setCreate_scedule(switchSettingSchedule.isChecked());
         auxSettingModel.setPeriods_percentage(getPercentagePeriods(Integer.parseInt(getAmountPeriods.getText().toString())));

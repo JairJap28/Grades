@@ -21,24 +21,38 @@ public class SubjectViewModel extends AndroidViewModel {
 
     private final String TAG = this.getClass().getSimpleName();
 
-    private SubjectDAO subjectDao;
-    //this is to get the periods and percentage
-    private SettingsDao settingsDao;
-
+    //store all the subjects
     private LiveData<List<SubjectModel>> mAllSubjects;
+    //store the period and its percentages
+    private LiveData<SparseIntArray> periods_grade;
+    //get the max grade
+    private LiveData<Float> max_grade;
+    //get the min grade
+    private LiveData<Float> min_grade;
     
     public SubjectViewModel(@NonNull Application application) {
         super(application);
 
         SubjectDataBase subjectDB = SubjectDataBase.getInstance(new WeakReference<>(application));
-        subjectDao = subjectDB.subjectDAO();
+        SubjectDAO subjectDao = subjectDB.subjectDAO();
         mAllSubjects = subjectDao.subjecs();
 
         SettingsDataBase settingsDB = SettingsDataBase.getInstance(new WeakReference<>(application));
-        settingsDao = settingsDB.settingsDao();
+        //this is to get the periods and percentage
+        SettingsDao settingsDao = settingsDB.settingsDao();
+
+        periods_grade = settingsDao.getPercentagePeriods();
+        max_grade = settingsDao.getMaxGrade();
+        min_grade = settingsDao.getMinGrade();
     }
 
     LiveData<List<SubjectModel>> getAllSubjects(){
         return mAllSubjects;
     }
+
+    LiveData<SparseIntArray> getPeriodPercentage() { return periods_grade; }
+
+    LiveData<Float> getMaxGrade(){ return max_grade; }
+
+    LiveData<Float> getMinGrade(){ return min_grade; }
 }

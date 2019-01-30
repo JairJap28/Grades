@@ -20,6 +20,9 @@ public class SettingsModel {
     @ColumnInfo(name = "max_grade")
     private float max_grade;
 
+    @ColumnInfo(name = "min_grade")
+    private float min_grade;
+
     @ColumnInfo(name = "max_credits")
     private int max_credits;
 
@@ -56,6 +59,14 @@ public class SettingsModel {
 
     public void setMax_credits(int max_credits) {
         this.max_credits = max_credits;
+    }
+
+    public float getMin_grade() {
+        return min_grade;
+    }
+
+    public void setMin_grade(float min_grade) {
+        this.min_grade = min_grade;
     }
 
     public boolean isCreate_scedule() {

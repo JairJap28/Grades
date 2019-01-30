@@ -23,6 +23,9 @@ public interface SettingsDao {
     @Query("SELECT max_grade FROM settings WHERE id = 'setting_1' ")
     LiveData<Float> getMaxGrade();
 
+    @Query("SELECT min_grade FROM settings WHERE id = 'setting_1' ")
+    LiveData<Float> getMinGrade();
+
     @Query("SELECT periods_percentage FROM settings WHERE id = 'setting_1'")
     LiveData<SparseIntArray> getPercentagePeriods();
 

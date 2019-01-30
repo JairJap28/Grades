@@ -3,6 +3,8 @@ package com.example.jairjap.worksdidacticoscsj.GradesDB.UploadGrade;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +74,34 @@ public class AdapterUpload extends RecyclerView.Adapter<AdapterUpload.ViewHolder
             grade = itemView.findViewById(R.id.editTextGradePeriod);
             percentage = itemView.findViewById(R.id.editTextPercentagePeriod);
             per = itemView.findViewById(R.id.linearLayoutPercentage);
+
+            grade.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    try{
+                        float grade = Float.parseFloat(s.toString());
+                        period_grade.setValueAt(getAdapterPosition(), grade);
+                    }catch (Exception e){
+
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    try{
+                        float grade = Float.parseFloat(s.toString());
+                        period_grade.setValueAt(getAdapterPosition(), grade);
+                    }catch (Exception e){
+
+                    }
+                }
+            });
+
         }
     }
 }

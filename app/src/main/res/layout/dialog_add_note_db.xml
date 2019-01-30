@@ -30,15 +30,6 @@
                 android:textSize="18sp"
                 android:gravity="center"/>
 
-            <Switch
-                android:id="@+id/switchDefaultGrades"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/use_default_percentages"
-                android:layout_marginBottom="7dp"
-                android:checked="true"/>
-
         </LinearLayout>
 
 

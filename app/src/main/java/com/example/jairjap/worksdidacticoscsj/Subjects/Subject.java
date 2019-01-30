@@ -31,6 +31,13 @@ public class Subject extends AppCompatActivity {
 
     private SubjectViewModel subjectViewModel;
 
+    //Store the periods and its percentages
+    private SparseIntArray period_percentage;
+    //store the max grade
+    private float max_grade;
+    //store the min grade
+    private float min_grade;
+
     public boolean btnDoneUpdate;
 
     @Override
@@ -70,6 +77,48 @@ public class Subject extends AppCompatActivity {
                     Collections.sort(subjectModels);
                     adapter.setData(subjectModels);
                 }
+            }
+        });
+
+        subjectViewModel.getPeriodPercentage().observe(this, new Observer<SparseIntArray>() {
+            @Override
+            public void onChanged(@Nullable SparseIntArray sparseIntArray) {
+                if(sparseIntArray != null && sparseIntArray.size() > 0){
+                    period_percentage = sparseIntArray;
+                }
+                else{
+                    period_percentage = new SparseIntArray();
+                    period_percentage.put(1, 30);
+                    period_percentage.put(2, 30);
+                    period_percentage.put(3, 40);
+                }
+                adapter.setPeriods_percentage(period_percentage);
+            }
+        });
+
+        subjectViewModel.getMaxGrade().observe(this, new Observer<Float>() {
+            @Override
+            public void onChanged(@Nullable Float aFloat) {
+                if(aFloat != null){
+                    max_grade = aFloat;
+                }
+                else {
+                    max_grade = 5.0f;
+                }
+                adapter.setMax_grade(max_grade);
+            }
+        });
+
+        subjectViewModel.getMinGrade().observe(this, new Observer<Float>() {
+            @Override
+            public void onChanged(@Nullable Float aFloat) {
+                if(aFloat != null){
+                    min_grade = aFloat;
+                }
+                else{
+                    min_grade = 3.5f;
+                }
+                adapter.setMin_grade(min_grade);
             }
         });
     }

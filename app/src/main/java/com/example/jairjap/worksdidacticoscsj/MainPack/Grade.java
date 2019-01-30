@@ -190,7 +190,7 @@ public class Grade extends AppCompatActivity {
                 subjectModel.setTeacher_name(teacher.getText().toString().trim());
                 subjectModel.setCant_credits(Integer.parseInt(credits.getText().toString().trim()));
                 //needed grade = max_grade because there are no any grades
-                subjectModel.setGrade_needed(max_grade);
+                subjectModel.setGrade_needed(0);
                 subjectModel.setPriority(1.0f);
 
                 //set the amount of periods and init it with 0.0
