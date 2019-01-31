@@ -107,4 +107,9 @@
     <string name="check_the_previous_and_current_semesters">Check the previous and current semesters</string>
     <string name="subject_added_successfull">Subject added successfully</string>
     <string name="done">Done</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="options">Options</string>
+    <string name="alert_delete_subject">If you delete the subject you will not be able to retrieve it</string>
 </resources>

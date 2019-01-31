@@ -1,8 +1,10 @@
 package com.example.jairjap.worksdidacticoscsj.Subjects;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,12 +14,13 @@ import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.Switch;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.jairjap.worksdidacticoscsj.GradesDB.CustomItemClickListener;
 import com.example.jairjap.worksdidacticoscsj.GradesDB.UploadGrade.AdapterUpload;
@@ -29,6 +32,7 @@ import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectServices;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Handler;
 
 public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHolderSubjetc>{
 
@@ -56,7 +60,7 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
         notifyDataSetChanged();
     }
 
-    public void setPeriods_percentage(SparseIntArray periods_percentage) {
+    void setPeriods_percentage(SparseIntArray periods_percentage) {
         this.periods_percentage = periods_percentage;
     }
 
@@ -64,15 +68,11 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
         this.max_grade = max_grade;
     }
 
-    public float getMin_grade() {
-        return min_grade;
-    }
-
-    public void setMin_grade(float min_grade) {
+    void setMin_grade(float min_grade) {
         this.min_grade = min_grade;
     }
 
-    public void setListener(CustomItemClickListener listener) {
+    void setListener(CustomItemClickListener listener) {
         this.listener = listener;
     }
 
@@ -102,10 +102,12 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
             holder.grades[i].setText(String.valueOf(period_grade.valueAt(i)));
         }
 
-        holder.final_grade.setText(String.valueOf(data.get(position).getGrade_needed()));
+        //set only two decimals
+        String out = String.format("%.2f", (data.get(position).getGrade_needed()));
+        holder.final_grade.setText(String.valueOf(out));
 
         if(data.get(position).getGrade_needed() < min_grade){
-            String out = String.format("%.2f", (min_grade - data.get(position).getGrade_needed()) );
+            out = String.format("%.2f", (min_grade - data.get(position).getGrade_needed()));
             holder.required_grade.setText(String.valueOf(out));
         }
         else{
@@ -115,17 +117,11 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
 
     @Override
     public int getItemCount() {
-        if(data != null){
+        if (data != null) {
             return data.size();
-        }
-        else{
+        } else {
             return 0;
         }
-    }
-
-    public void updateRating(){
-        Collections.sort(data);
-        notifyDataSetChanged();
     }
 
     class ViewHolderSubjetc extends RecyclerView.ViewHolder{
@@ -164,15 +160,15 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
             grade.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialogSubjectGrade();
+                    dialogOptions();
                 }
             });
-            
+
             ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                 @Override
                 public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                    //Test changing rating bar
-                   //Toast.makeText(c, rating + "", Toast.LENGTH_SHORT).show();
+                    data.get(getAdapterPosition()).setPriority(rating);
+                    //updateRating();
                 }
             });
 
@@ -195,10 +191,36 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
 
         }
 
+        void updateRating(){
+            Collections.sort(data);
+            notifyDataSetChanged();
+        }
+
         //this subject is for you and give the option
         //to update the grade of the period
         @SuppressLint("ClickableViewAccessibility")
         void dialogSubjectGrade(){
+
+            class Foo{
+                void updateGrades(){
+                    float grade_needed = 0;
+                    //get the grades in this variable
+                    SparseArray<Float> aux_grades = data.get(getAdapterPosition()).getPeriod_grade();
+
+                    //iterate trought the periods
+                    for(int i = 0; i < periods_percentage.size(); i++){
+                        //calculate de final grade
+                        grade_needed += (periods_percentage.valueAt(i) * aux_grades.valueAt(i)) / 100.0;
+                    }
+
+                    SubjectModel subjectModel = data.get(getAdapterPosition());
+                    subjectModel.setPeriod_grade(data.get(getAdapterPosition()).getPeriod_grade());
+                    subjectModel.setGrade_needed(grade_needed);
+
+                    SubjectServices services = new SubjectServices(wContext);
+                    services.updatePeriodGrade(subjectModel);
+                }
+            }
 
             final Dialog dialog = new Dialog(wContext.get());
             dialog.setContentView(R.layout.dialog_add_note_db);
@@ -206,6 +228,7 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
             Button cancel = dialog.findViewById(R.id.btnCancelAddGrade);
             Button save = dialog.findViewById(R.id.btnSaveAddGrade);
             LinearLayout linearLayoutBar = dialog.findViewById(R.id.linearLayout_ratingBar);
+            LinearLayout container = dialog.findViewById(R.id.linearLayout_container_period_grades);
             RecyclerView rvGrades = dialog.findViewById(R.id.rvGradesPeriod);
             final AdapterUpload adapter;
 
@@ -217,42 +240,110 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
             adapter.setPeriod_grade(data.get(getAdapterPosition()).getPeriod_grade());
             rvGrades.setAdapter(adapter);
 
+            Animation animation1 = AnimationUtils.loadAnimation(wContext.get(), R.anim.lefttoright);
+            container.startAnimation(animation1);
             dialog.show();
+            //this is to set the background transparent
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
             save.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    updateGrades();
-                    dialog.dismiss();
-                    Toast.makeText(wContext.get(), wContext.get().getResources().getString(R.string.done), Toast.LENGTH_SHORT).show();
+                    Foo foo = new Foo();
+                    foo.updateGrades();
+                    Animation animation = AnimationUtils.loadAnimation(wContext.get(), R.anim.fadeout);
+                    animation.setDuration(1000);
+                    animation.setFillAfter(true);
+                    hideDialog(dialog, false);
+                    container.startAnimation(animation);
                 }
             });
 
             cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
+                    Animation animation = AnimationUtils.loadAnimation(wContext.get(), R.anim.righttoleft);
+                    animation.setDuration(1000);
+                    animation.setFillAfter(true);
+                    container.startAnimation(animation);
+                    hideDialog(dialog, false);
                 }
             });
         }
 
-        void updateGrades(){
-            float grade_needed = 0;
-            //get the grades in this variable
-            SparseArray<Float> aux_grades = data.get(getAdapterPosition()).getPeriod_grade();
+        //this dialog is to show the options
+        void dialogOptions(){
+            Dialog dialog = new Dialog(wContext.get());
+            dialog.setContentView(R.layout.dialog_options_subject);
 
-            //iterate trought the periods
-            for(int i = 0; i < periods_percentage.size(); i++){
-                //calculate de final grade
-                grade_needed += (periods_percentage.valueAt(i) * aux_grades.valueAt(i)) / 100.0;
+            RelativeLayout container = dialog.findViewById(R.id.relativeLayout_container_ops_subjets);
+
+            LinearLayout btn_close = dialog.findViewById(R.id.linearLayout_btn_close);
+            LinearLayout btn_delete = dialog.findViewById(R.id.linearLayout_btn_delete_subject);
+            LinearLayout btn_edit = dialog.findViewById(R.id.linearLayout_btn_edit_subject);
+
+            Animation animation = AnimationUtils.loadAnimation(wContext.get(), R.anim.lefttoright);
+            container.startAnimation(animation);
+            dialog.show();
+            //this is to set the background transparent
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+
+
+            btn_close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Animation animation = AnimationUtils.loadAnimation(wContext.get(), R.anim.righttoleft);
+                    animation.setDuration(1000);
+                    container.startAnimation(animation);
+                    hideDialog(dialog, false);
+                }
+            });
+
+            btn_edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Animation animation = AnimationUtils.loadAnimation(wContext.get(), R.anim.righttoleft);
+                    animation.setDuration(1000);
+                    animation.setFillAfter(true);
+                    container.startAnimation(animation);
+                    hideDialog(dialog, true);
             }
+            });
 
-            SubjectModel subjectModel = data.get(getAdapterPosition());
-            subjectModel.setPeriod_grade(data.get(getAdapterPosition()).getPeriod_grade());
-            subjectModel.setGrade_needed(grade_needed);
-
-            SubjectServices services = new SubjectServices(wContext);
-            services.updateSubject(subjectModel);
         }
+
+        void hideDialog(Dialog dialog, boolean flag){
+            //if flag = true, that means we have to open the new dialog
+            new Thread(new Runnable(){
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(1000);
+                        ((Activity) wContext.get()).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.hide();
+                                if(flag){
+                                    dialogSubjectGrade();
+                                }
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        ((Activity) wContext.get()).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.hide();
+                            }
+                        });
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+        class HandleDialog{
+
+        }
+
     }
 }

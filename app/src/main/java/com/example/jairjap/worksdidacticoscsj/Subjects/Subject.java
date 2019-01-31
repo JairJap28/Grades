@@ -31,6 +31,9 @@ public class Subject extends AppCompatActivity {
 
     private SubjectViewModel subjectViewModel;
 
+    //Store the subjects
+    private List<SubjectModel> subjectModels;
+
     //Store the periods and its percentages
     private SparseIntArray period_percentage;
     //store the max grade
@@ -71,9 +74,10 @@ public class Subject extends AppCompatActivity {
         //OBSERVER FOR LIVE DATA
         subjectViewModel.getAllSubjects().observe(this, new Observer<List<SubjectModel>>() {
             @Override
-            public void onChanged(@Nullable List<SubjectModel> subjectModels) {
-                if (subjectModels != null) {
+            public void onChanged(@Nullable List<SubjectModel> in) {
+                if (in != null) {
                     //Sort the subjects
+                    subjectModels = in;
                     Collections.sort(subjectModels);
                     adapter.setData(subjectModels);
                 }
@@ -142,5 +146,11 @@ public class Subject extends AppCompatActivity {
                 default:
                     return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onDestroy(){
+        subjectViewModel.updateSubjecs(subjectModels);
+        super.onDestroy();
     }
 }

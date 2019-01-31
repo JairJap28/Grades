@@ -3,9 +3,7 @@ package com.example.jairjap.worksdidacticoscsj.Subjects;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.SparseIntArray;
 
 import com.example.jairjap.worksdidacticoscsj.Room.SettingsRoom.SettingsDao;
@@ -13,6 +11,7 @@ import com.example.jairjap.worksdidacticoscsj.Room.SettingsRoom.SettingsDataBase
 import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectDAO;
 import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectDataBase;
 import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectModel;
+import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectServices;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -20,6 +19,8 @@ import java.util.List;
 public class SubjectViewModel extends AndroidViewModel {
 
     private final String TAG = this.getClass().getSimpleName();
+
+    private SubjectDAO subjectDao;
 
     //store all the subjects
     private LiveData<List<SubjectModel>> mAllSubjects;
@@ -34,7 +35,7 @@ public class SubjectViewModel extends AndroidViewModel {
         super(application);
 
         SubjectDataBase subjectDB = SubjectDataBase.getInstance(new WeakReference<>(application));
-        SubjectDAO subjectDao = subjectDB.subjectDAO();
+        subjectDao = subjectDB.subjectDAO();
         mAllSubjects = subjectDao.subjecs();
 
         SettingsDataBase settingsDB = SettingsDataBase.getInstance(new WeakReference<>(application));
@@ -55,4 +56,9 @@ public class SubjectViewModel extends AndroidViewModel {
     LiveData<Float> getMaxGrade(){ return max_grade; }
 
     LiveData<Float> getMinGrade(){ return min_grade; }
+
+    void updateSubjecs(List<SubjectModel> subjectModels){
+        SubjectServices services = new SubjectServices(new WeakReference<>(getApplication()));
+        services.updateSubject(subjectModels);
+    }
 }

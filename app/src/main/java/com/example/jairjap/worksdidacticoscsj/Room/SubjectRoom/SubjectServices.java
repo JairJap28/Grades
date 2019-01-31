@@ -30,12 +30,12 @@ public class SubjectServices {
         new InsertSubjectAsync().execute(subjectModel);
     }
 
-    public void updateSubject(SubjectModel subjectModel){
+    public void updatePeriodGrade(SubjectModel... subjectModel){
         new UpdatePeriodGradeAsync().execute(subjectModel);
     }
-
-    public void updatePeriodGrade(SparseArray<Float> period_grade, String in){
-
+    //search for this waring
+    public void updateSubject(List<SubjectModel> subjectModels){
+        new UpdateSubject().execute(subjectModels);
     }
 
     public void updatePriority(String id, String priority){
@@ -63,6 +63,17 @@ public class SubjectServices {
         @Override
         protected Void doInBackground(SubjectModel... subjectModels) {
             subjectDao.updateSubject(subjectModels[0]);
+            return null;
+        }
+    }
+
+    static class UpdateSubject extends AsyncTask<List<SubjectModel>, Void, Void>{
+
+        @Override
+        protected Void doInBackground(List<SubjectModel>... lists) {
+            for(SubjectModel model: lists[0]){
+                subjectDao.updateSubject(model);
+            }
             return null;
         }
     }

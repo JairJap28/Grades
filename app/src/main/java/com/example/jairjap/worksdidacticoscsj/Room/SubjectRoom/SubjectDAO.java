@@ -20,7 +20,7 @@ public interface SubjectDAO {
     void insertSubject(SubjectModel... subjectModel);
 
     @Update(onConflict = OnConflictStrategy.IGNORE)
-    void updateSubject(SubjectModel subjectModel);
+    void updateSubject(SubjectModel subjectModels);
 
     @Query("UPDATE subjects SET peridos_Grade = :periods_grade WHERE id = :id")
     void updatePeriodGrade(SparseArray<Float> periods_grade, int id);

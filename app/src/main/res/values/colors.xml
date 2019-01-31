@@ -13,8 +13,11 @@
     <color name="colorMaterialYellow">#ffb300</color>
     <color name="colorYellowAux">#FFEB3B</color>
     <color name="colorLightYellow">#fdf184</color>
+
+    <color name="colorWhite">#fff</color>
     
     <color name="circleblue">#0400ff</color>
+    <color name="circleredLightWine">#ff457c</color>
     <color name="circleredWine">#cf003e</color>
     <color name="circleOrange">#ff5500</color>
     <color name="circleYellow">#ffcc00</color>
