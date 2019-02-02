@@ -2,6 +2,7 @@ package com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
@@ -21,6 +22,9 @@ public interface SubjectDAO {
 
     @Update(onConflict = OnConflictStrategy.IGNORE)
     void updateSubject(SubjectModel subjectModels);
+
+    @Delete
+    void deleteSubject(SubjectModel subjectModel);
 
     @Query("UPDATE subjects SET peridos_Grade = :periods_grade WHERE id = :id")
     void updatePeriodGrade(SparseArray<Float> periods_grade, int id);

@@ -2,10 +2,14 @@ package com.example.jairjap.worksdidacticoscsj.Subjects;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,11 +25,13 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jairjap.worksdidacticoscsj.GradesDB.CustomItemClickListener;
 import com.example.jairjap.worksdidacticoscsj.GradesDB.UploadGrade.AdapterUpload;
 import com.example.jairjap.worksdidacticoscsj.Preferences;
 import com.example.jairjap.worksdidacticoscsj.R;
+import com.example.jairjap.worksdidacticoscsj.Room.ScheduleRoom.ScheduleService;
 import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectModel;
 import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectServices;
 
@@ -48,6 +54,8 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
     //max grade to calculate the needed grade
     private float max_grade;
     private float min_grade;
+
+    private WeakReference<CoordinatorLayout> layoutWeakReference;
 
     public AdapterSubject(WeakReference<Context> wContext) {
         this.wContext = wContext;
@@ -76,12 +84,16 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
         this.listener = listener;
     }
 
+    public void setLayoutWeakReference(WeakReference<CoordinatorLayout> layoutWeakReference) {
+        this.layoutWeakReference = layoutWeakReference;
+    }
+
     @NonNull
     @Override
     public ViewHolderSubjetc onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_subject_db, parent, false);
         final ViewHolderSubjetc mViewHolder = new ViewHolderSubjetc(v);
-        v.setOnClickListener(new View.OnClickListener() {
+        mViewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v1) {
                 listener.onItemClick(v1, mViewHolder.getAdapterPosition());
@@ -254,7 +266,7 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
                     Animation animation = AnimationUtils.loadAnimation(wContext.get(), R.anim.fadeout);
                     animation.setDuration(1000);
                     animation.setFillAfter(true);
-                    hideDialog(dialog, false);
+                    hideDialog(dialog, 1000,false);
                     container.startAnimation(animation);
                 }
             });
@@ -266,7 +278,7 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
                     animation.setDuration(1000);
                     animation.setFillAfter(true);
                     container.startAnimation(animation);
-                    hideDialog(dialog, false);
+                    hideDialog(dialog, 1000,false);
                 }
             });
         }
@@ -282,6 +294,8 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
             LinearLayout btn_delete = dialog.findViewById(R.id.linearLayout_btn_delete_subject);
             LinearLayout btn_edit = dialog.findViewById(R.id.linearLayout_btn_edit_subject);
 
+            CoordinatorLayout coordinatorLayout = dialog.findViewById(R.id.coordinaterLayout_subjects);
+
             Animation animation = AnimationUtils.loadAnimation(wContext.get(), R.anim.lefttoright);
             container.startAnimation(animation);
             dialog.show();
@@ -295,7 +309,7 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
                     Animation animation = AnimationUtils.loadAnimation(wContext.get(), R.anim.righttoleft);
                     animation.setDuration(1000);
                     container.startAnimation(animation);
-                    hideDialog(dialog, false);
+                    hideDialog(dialog, 1000,false);
                 }
             });
 
@@ -306,19 +320,62 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
                     animation.setDuration(1000);
                     animation.setFillAfter(true);
                     container.startAnimation(animation);
-                    hideDialog(dialog, true);
+                    hideDialog(dialog, 1000,true);
             }
+            });
+
+            btn_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Animation animation = AnimationUtils.loadAnimation(wContext.get(), R.anim.zoomout);
+                    animation.setDuration(400);
+                    container.startAnimation(animation);
+                    hideDialog(dialog, 400,false);
+                    showAlertDialog();
+                }
             });
 
         }
 
-        void hideDialog(Dialog dialog, boolean flag){
+        void showAlertDialog(){
+            AlertDialog.Builder aBuilder = new AlertDialog.Builder(wContext.get());
+            //Set message to the diallog
+            aBuilder.setMessage(wContext.get().getResources().getString(R.string.are_you_sure_delete));
+            aBuilder.setPositiveButton(wContext.get().getResources().getString(R.string.yes),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog_interface, int which) {
+                            SubjectServices services = new SubjectServices(wContext);
+                            services.deleteSubject(data.get(getAdapterPosition()));
+
+                            ScheduleService service =  new ScheduleService();
+                            service.delteById(data.get(getAdapterPosition()).getId());
+
+                            data.remove(getAdapterPosition());
+                            notifyItemRemoved(getAdapterPosition());
+                            showSnackBar(String.valueOf(wContext.get().getResources().getString(R.string.subject_deleted_successfully)));
+                        }
+                    });
+
+            aBuilder.setNegativeButton(wContext.get().getResources().getString(R.string.no),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog_interface, int which) {
+                            showSnackBar(String.valueOf(wContext.get().getResources().getString(R.string.be_careful)));
+                        }
+                    });
+
+            AlertDialog alertDialog = aBuilder.create();
+            alertDialog.show();
+        }
+
+        void hideDialog(Dialog dialog,long sleepTime, boolean flag){
             //if flag = true, that means we have to open the new dialog
             new Thread(new Runnable(){
                 @Override
                 public void run() {
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(sleepTime);
                         ((Activity) wContext.get()).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -341,9 +398,11 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
             }).start();
         }
 
-        class HandleDialog{
-
+        void showSnackBar(String message){
+            Snackbar.make(layoutWeakReference.get(),
+                    message,
+                    Snackbar.LENGTH_SHORT)
+                    .show();
         }
-
     }
 }

@@ -42,6 +42,10 @@ public class SubjectServices {
         new UpdatePriorityAsync().execute(id, priority);
     }
 
+    public void deleteSubject(SubjectModel... subjectModels){
+        new DeleteSubject().execute(subjectModels);
+    }
+
 
     /* GETTER AND SETTERS */
     static class SelectSubjectsAsync extends AsyncTask<Void, Void, LiveData<List<SubjectModel>>>{
@@ -84,6 +88,17 @@ public class SubjectServices {
             //pos 0 is the id
             //pos 1 is the new priority
             subjectDao.updatePriority(strings[0], Float.parseFloat(strings[1]));
+            return null;
+        }
+    }
+
+    static class DeleteSubject extends AsyncTask<SubjectModel, Void, Void>{
+
+        @Override
+        protected Void doInBackground(SubjectModel... subjectModels) {
+            for(SubjectModel subjectModel: subjectModels){
+                subjectDao.deleteSubject(subjectModel);
+            }
             return null;
         }
     }

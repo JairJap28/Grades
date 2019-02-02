@@ -3,6 +3,7 @@ package com.example.jairjap.worksdidacticoscsj.Subjects;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,8 +27,9 @@ import java.util.List;
 public class Subject extends AppCompatActivity {
 
     private RecyclerView rv;
+    private CoordinatorLayout coordinatorLayout;
     private AdapterSubject adapter;
-    private ArrayList<PropertySubject> data;
+    private List<SubjectModel> data;
 
     private SubjectViewModel subjectViewModel;
 
@@ -49,7 +51,7 @@ public class Subject extends AppCompatActivity {
         setContentView(R.layout.activity_subject);
 
         btnDoneUpdate = false;
-
+        coordinatorLayout = findViewById(R.id.coordinaterLayout_subjects);
         rv = findViewById(R.id.rvSubjectsDB);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -63,12 +65,13 @@ public class Subject extends AppCompatActivity {
         CustomItemClickListener itemClickListener = new CustomItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-                Toast.makeText(Subject.this, data.get(position).getSubject(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Subject.this, data.get(position).getName(), Toast.LENGTH_SHORT).show();
             }
         };
 
         adapter = new AdapterSubject(new WeakReference<>(this));
         adapter.setListener(itemClickListener);
+        adapter.setLayoutWeakReference(new WeakReference<>(coordinatorLayout));
         rv.setAdapter(adapter);
 
         //OBSERVER FOR LIVE DATA
@@ -80,6 +83,7 @@ public class Subject extends AppCompatActivity {
                     subjectModels = in;
                     Collections.sort(subjectModels);
                     adapter.setData(subjectModels);
+                    data = in;
                 }
             }
         });
