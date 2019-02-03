@@ -14,6 +14,11 @@
     <color name="colorYellowAux">#FFEB3B</color>
     <color name="colorLightYellow">#fdf184</color>
 
+    <!-- Color for the widget -->
+    <color name="backgroundTitle">#ffb300</color>
+    <color name="backgroundContent">#fff</color>
+    <color name="grayLetters">#c7c7c7</color>
+
     <color name="colorWhite">#fff</color>
     
     <color name="circleblue">#0400ff</color>
