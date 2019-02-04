@@ -75,8 +75,11 @@ public class SubjectServices {
 
         @Override
         protected Void doInBackground(List<SubjectModel>... lists) {
-            for(SubjectModel model: lists[0]){
-                subjectDao.updateSubject(model);
+
+            if(lists[0] != null){
+                for(SubjectModel model: lists[0]){
+                    subjectDao.updateSubject(model);
+                }
             }
             return null;
         }

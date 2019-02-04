@@ -1,4 +1,4 @@
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -43,6 +43,7 @@
 
 
             <LinearLayout
+                android:id="@+id/btn_update_widget"
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/btn_edit_selector"
@@ -66,12 +67,19 @@
             android:background="@color/backgroundContent"
             android:orientation="vertical">
 
+            <ListView
+                android:id="@+id/list_SubjectsWidget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </ListView>
+
             <LinearLayout
+                android:id="@+id/linearLayout_empty_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:visibility="visible">
+                android:gravity="center">
 
                 <ImageView
                     android:layout_width="64dp"
@@ -86,19 +94,10 @@
 
             </LinearLayout>
 
-            <ListView
-                android:id="@+id/list_SubjectsWidget"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/item_view_subject_widget"
-                android:visibility="gone">
-
-            </ListView>
-
 
         </LinearLayout>
 
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

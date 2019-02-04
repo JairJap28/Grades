@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 import android.util.SparseArray;
 
 import java.util.Date;
@@ -23,7 +24,7 @@ public class ScheduleModel {
     private String teacher_name;
 
     @ColumnInfo(name = "day_time")
-    private SparseArray<String> day;
+    private HashMap<Integer,Pair<String, String>> day;
 
     @NonNull
     public int getId() {
@@ -50,11 +51,11 @@ public class ScheduleModel {
         this.teacher_name = teacher_name;
     }
 
-    public SparseArray<String> getDay() {
+    public HashMap<Integer,Pair<String, String>> getDay() {
         return day;
     }
 
-    public void setDay(SparseArray<String> day) {
+    public void setDay(HashMap<Integer,Pair<String, String>> day) {
         this.day = day;
     }
 }

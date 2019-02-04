@@ -5,8 +5,13 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
+import java.util.List;
+
 @Dao
 public interface ScheduleDAO {
+
+    @Query("SELECT * FROM schedule")
+    List<ScheduleModel> getSchedule();
 
     @Insert
     void insertSchedule(ScheduleModel scheduleModel);

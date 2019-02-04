@@ -112,12 +112,15 @@
     <string name="subject_deleted_successfully">Subject successfully deleted</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="options">Options</string>
     <string name="alert_delete_subject">If you delete the subject you will not be able to retrieve it</string>
     <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
+    <string name="add_widget">Add Widget</string>
     <string name="schedule">Schedule</string>
     <string name="classes">Classes</string>
     <string name="no_classes_today">No classes today</string>
+    <string name="teacher_">Teacher:</string>
+    <string name="hour_">Hour:</string>
+    <string name="classroom_">ClassRoom:</string>
+    <string name="there_is_no_classes">There is no classes</string>
 </resources>

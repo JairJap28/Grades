@@ -12,6 +12,7 @@ import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.jairjap.worksdidacticoscsj.GradesDB.CustomItemClickListener;
@@ -54,6 +55,8 @@ public class Subject extends AppCompatActivity {
         coordinatorLayout = findViewById(R.id.coordinaterLayout_subjects);
         rv = findViewById(R.id.rvSubjectsDB);
 
+        LinearLayout empy_layout = findViewById(R.id.linearLayout_empty_subjects);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rv.setLayoutManager(linearLayoutManager);
 
@@ -78,11 +81,16 @@ public class Subject extends AppCompatActivity {
         subjectViewModel.getAllSubjects().observe(this, new Observer<List<SubjectModel>>() {
             @Override
             public void onChanged(@Nullable List<SubjectModel> in) {
-                if (in != null) {
+                if (in != null && in.size() > 0) {
+                    empy_layout.setVisibility(View.GONE);
+                    rv.setVisibility(View.VISIBLE);
+
                     //Sort the subjects
                     subjectModels = in;
                     Collections.sort(subjectModels);
                     adapter.setData(subjectModels);
+                    adapter.setEmptyLayout(new WeakReference<>(empy_layout));
+                    adapter.setRv(new WeakReference<>(rv));
                     data = in;
                 }
             }

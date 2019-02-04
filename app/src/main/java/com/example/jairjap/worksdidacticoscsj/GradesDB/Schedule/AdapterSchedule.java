@@ -4,11 +4,14 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -60,8 +63,9 @@ public class AdapterSchedule extends RecyclerView.Adapter<AdapterSchedule.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        Button time;
-        EditText showTime;
+        ImageView time;
+        TextView showTime;
+        EditText class_room;
         TextView day;
 
         public ViewHolder(View itemView) {
@@ -70,11 +74,29 @@ public class AdapterSchedule extends RecyclerView.Adapter<AdapterSchedule.ViewHo
             time = itemView.findViewById(R.id.btnTimeDay);
             showTime = itemView.findViewById(R.id.editTextTimeDay);
             day = itemView.findViewById(R.id.textViewDay);
+            class_room = itemView.findViewById(R.id.editText_classRoom);
 
             time.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dialogTimePicker();
+                }
+            });
+
+            class_room.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    days.get(getAdapterPosition()).setClass_room(String.valueOf(s));
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    days.get(getAdapterPosition()).setClass_room(s.toString());
                 }
             });
         }

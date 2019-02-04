@@ -2,17 +2,21 @@ package com.example.jairjap.worksdidacticoscsj.MainPack;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.view.View;
@@ -33,11 +37,13 @@ import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectModel;
 import com.example.jairjap.worksdidacticoscsj.SettingsPack.Settings;
 import com.example.jairjap.worksdidacticoscsj.Simulation.Simulation;
 import com.example.jairjap.worksdidacticoscsj.Subjects.Subject;
+import com.example.jairjap.worksdidacticoscsj.Widget.ScheduleWidget;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class Grade extends AppCompatActivity {
 
@@ -124,6 +130,9 @@ public class Grade extends AppCompatActivity {
                     //verify if the array is empty
                     amount_periods = (sparseIntArray.size() > 0) ? sparseIntArray.size() : 3;
                 }
+                else{
+                    amount_periods = 3;
+                }
             }
         });
     }
@@ -204,9 +213,9 @@ public class Grade extends AppCompatActivity {
 
                 //the key will be the index of the day
                 //the value will be the hout
-                SparseArray<String> auxDays = new SparseArray<>();
+                HashMap<Integer,Pair<String, String>> auxDays = new HashMap<>();
                 for(PropertySchedule p: days){
-                    auxDays.put(p.getIndex() + 1, p.getHour());
+                    auxDays.put(p.getIndex(), new Pair<>(p.getHour(), p.getClass_room()));
                 }
 
                 ScheduleModel scheduleModel = new ScheduleModel();
@@ -222,12 +231,14 @@ public class Grade extends AppCompatActivity {
                 dialog.dismiss();
                 Toast.makeText(Grade.this, Grade.this.getResources().getString(R.string.subject_added_successfull),
                         Toast.LENGTH_SHORT).show();
+
+                addSubjectWidget();
             }
 
             private void checkBoxControl(CheckBox c, int pos, boolean [] controlDays, String day){
                 controlDays[pos] = c.isChecked();
                 if(controlDays[pos]){
-                    days.add(new PropertySchedule(day, pos));
+                    days.add(new PropertySchedule(day, pos + 1));
                     Collections.sort(days);
                     adapter = new AdapterSchedule(new WeakReference<>(Grade.this), days);
                     rvDays.setAdapter(adapter);
@@ -236,6 +247,23 @@ public class Grade extends AppCompatActivity {
                     int index = getIndex(pos);
                     adapter.remove(index);
                 }
+            }
+
+            private void addSubjectWidget() {
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+
+                        Grade.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                // this will send the broadcast to update the appwidget
+                                ScheduleWidget.sendRefreshBroadcast(Grade.this);
+                            }
+                        });
+                        return null;
+                    }
+                }.execute();
             }
         }
         Foo foo = new Foo();

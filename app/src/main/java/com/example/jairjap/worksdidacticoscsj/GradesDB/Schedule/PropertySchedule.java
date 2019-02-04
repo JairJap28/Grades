@@ -7,6 +7,7 @@ import com.example.jairjap.worksdidacticoscsj.Simulation.PropertyGrade;
 public class PropertySchedule implements Comparable<PropertySchedule>{
     private String subject;
     private String hour;
+    private String class_room;
     private int index;
 
     public PropertySchedule(String subject, int index){
@@ -37,6 +38,14 @@ public class PropertySchedule implements Comparable<PropertySchedule>{
 
     public void setHour(String hour) {
         this.hour = hour;
+    }
+
+    public String getClass_room() {
+        return class_room;
+    }
+
+    public void setClass_room(String class_room) {
+        this.class_room = class_room;
     }
 
     @Override

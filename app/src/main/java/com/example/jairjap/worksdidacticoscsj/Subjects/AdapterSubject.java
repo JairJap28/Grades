@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -34,6 +35,7 @@ import com.example.jairjap.worksdidacticoscsj.R;
 import com.example.jairjap.worksdidacticoscsj.Room.ScheduleRoom.ScheduleService;
 import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectModel;
 import com.example.jairjap.worksdidacticoscsj.Room.SubjectRoom.SubjectServices;
+import com.example.jairjap.worksdidacticoscsj.Widget.ScheduleWidget;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
@@ -48,6 +50,9 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
     private boolean opc;
     private CustomItemClickListener listener;
 
+    private WeakReference<LinearLayout> emptyLayout;
+    private WeakReference<RecyclerView> rv;
+
     //get the periods and its percentage to
     //calculate the final grade and needed grade
     private SparseIntArray periods_percentage;
@@ -61,6 +66,13 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
         this.wContext = wContext;
     }
 
+    public void setEmptyLayout(WeakReference<LinearLayout> emptyLayout) {
+        this.emptyLayout = emptyLayout;
+    }
+
+    public void setRv(WeakReference<RecyclerView> rv) {
+        this.rv = rv;
+    }
 
     //GETTER AND SETTERS
     public void setData(List<SubjectModel> data) {
@@ -348,12 +360,38 @@ public class AdapterSubject extends RecyclerView.Adapter<AdapterSubject.ViewHold
                             SubjectServices services = new SubjectServices(wContext);
                             services.deleteSubject(data.get(getAdapterPosition()));
 
-                            ScheduleService service =  new ScheduleService();
+                            ScheduleService service =  new ScheduleService(wContext);
                             service.delteById(data.get(getAdapterPosition()).getId());
 
                             data.remove(getAdapterPosition());
                             notifyItemRemoved(getAdapterPosition());
+
+                            if(data.size() == 0){
+                                ((Activity) wContext.get()).runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        emptyLayout.get().setVisibility(View.VISIBLE);
+                                        rv.get().setVisibility(View.GONE);
+                                    }
+                                });
+                            }
+
                             showSnackBar(String.valueOf(wContext.get().getResources().getString(R.string.subject_deleted_successfully)));
+
+                            new AsyncTask<Void, Void, Void>() {
+                                @Override
+                                protected Void doInBackground(Void... params) {
+
+                                    ((Activity) wContext.get()).runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            // this will send the broadcast to update the appwidget
+                                            ScheduleWidget.sendRefreshBroadcast(wContext.get());
+                                        }
+                                    });
+                                    return null;
+                                }
+                            }.execute();
                         }
                     });
 

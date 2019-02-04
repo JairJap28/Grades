@@ -31,6 +31,7 @@
             android:configChanges="screenSize|orientation"
             android:windowSoftInputMode="stateHidden" />
 
+        <!-- This is for the widget -->
         <receiver android:name=".Widget.ScheduleWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -41,8 +42,9 @@
                 android:resource="@xml/schedule_widget_info" />
         </receiver>
 
-        <!--service android:name=".Widget.ScheduleRemoteViewService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"></service-->
+        <service android:name=".Widget.ScheduleRemoteViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            android:exported="false" />
     </application>
 
 </manifest>

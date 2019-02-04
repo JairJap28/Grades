@@ -10,7 +10,8 @@ public class ScheduleRemoteViewService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        Log.d(TAG, ": ObGetViewFactory: Service Called");
+        Log.d(TAG, ": OnGetViewFactory: Service Called");
+
         return new ScheduleRemoteViewFactory(this.getApplicationContext(), intent);
     }
 }
